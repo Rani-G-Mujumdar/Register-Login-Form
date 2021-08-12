@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+    <head>
+        <title>Register Form</title>
+        <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    </head>
+
+    <body>
+
+
+    <centre>
+        <h2>Register Here:)</h2>
+        <form action="Register form" method="post">
+            <table>
+                <tr>
+                    <td>Username:</td>
+                    <td>
+                        <input type=" text" name ="user" id="user">
+                    </td>
+                </tr>
+                <td>Email-ID:</td>
+                <td>
+                    <input type="email-id" name="user_email" id="user_email">
+                </td>
+                <tr>
+                    <td>Password:</td>
+                    <td>
+                        <input type="password" name="user_password" id="user_password">
+                    </td>
+                </tr>
+                <td>Phone:</td>
+                <td>
+                    <input typr="Phone Number" name="user_phone" id="user_phone">
+                </td>
+                
+                <tr>
+                    <td>Gender : </td>
+                <td>
+                    <input type="type" name="gender" id="gender">
+                    
+                </td>
+                <tr>
+                    <td>
+                        <input type="button" class="btn btn-primary" value="register"
+                               onclick="Register();">
+                    </td>
+                
+                    <td>
+                        Already Registered? <a href="Login Form.html">Login</a>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+
+
+    </centre>
+
+
+
+
+    <script>
+        function validateAndGetFormData() {
+            var userVar = $("#user").val();
+            if (userVar === "") {
+                alert("Username Required Value");
+                $("#user").focus();
+                return "";
+            }
+            var user_emailVar = $("#user_email").val();
+            if (user_emailVar === "") {
+                alert("Email-ID is Required Value");
+                $("#user_email").focus();
+                return "";
+            }
+            var user_passwordVar = $("#user_password").val();
+            if (user_passwordVar === "") {
+                alert("Password is Mandatory");
+                $("#user_password").focus();
+                return "";
+            }
+            var user_phoneVar = $("#user_phone").val();
+            if (user_phoneVar === "") {
+                alert(" Phone Number is Mandatory");
+                $("#user_phone").focus();
+                return "";
+            }
+            var genderVar = $("#gender").val();
+            if (genderVar === "") {
+                alert(" gender is Mandatory");
+                $("#gender").focus();
+                return "";
+            }
+           
+            var jsonStrObj = {
+                user: userVar,
+                user_email: user_emailVar,
+                user_password: user_passwordVar,
+                user_phone: user_phoneVar,
+                gender:genderVar
+            };
+            return JSON.stringify(jsonStrObj);
+        }
+
+        // This method is used to create PUT Json request.
+        function createPUTRequest(connToken, jsonObj, dbName, relName) {
+            var putRequest = "{\n"
+                    + "\"token\" : \""
+                    + connToken
+                    + "\","
+                    + "\"dbName\": \""
+                    + dbName
+                    + "\",\n" + "\"cmd\" : \"PUT\",\n"
+                    + "\"rel\" : \""
+                    + relName + "\","
+                    + "\"jsonStr\": \n"
+                    + jsonObj
+                    + "\n"
+                    + "}";
+            return putRequest;
+        }
+        function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+            var url = dbBaseUrl + apiEndPointUrl;
+            var jsonObj;
+            $.post(url, reqString, function (result) {
+                jsonObj = JSON.parse(result);
+            }).fail(function (result) {
+                var dataJsonObj = result.responseText;
+                jsonObj = JSON.parse(dataJsonObj);
+            });
+            return jsonObj;
+        }
+        function resetForm() {
+            $("#user").val("")
+            $("#user_email").val("");
+            $("#user_password").val("");
+            $("#user_phone").val("");
+            $("#gender").val("");
+            $("#user").focus();
+        }
+
+
+
+
+
+        function Register() {
+            var jsonStr = validateAndGetFormData();
+            if (jsonStr === "") {
+                return;
+            }
+            var putReqStr = createPUTRequest("90936285|-31948850925317231|90945385",
+                    jsonStr, "Covid-Management", "Ind-Rel");
+            alert(putReqStr);
+            jQuery.ajaxSetup({async: false});
+            var resultObj = executeCommand(putReqStr,
+                    "http://api.login2explore.com:5577", "/api/iml");
+
+            jQuery.ajaxSetup({async: true});
+            alert(JSON.stringify(resultObj));
+            resetForm();
+
+        }
+    </script>
+</body>
+</html>
